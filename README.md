@@ -1,4 +1,3 @@
-# Readme
 ## Building Management frameworks for distributed systems using Python and SaltStack
 Our presentation for PyCon India 2015.
 ## License
