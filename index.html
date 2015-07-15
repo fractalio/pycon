@@ -46,6 +46,180 @@
                 <section>
                     <h1>Building management frameworks for distrubuted systems using Python and SaltStack</h1>
                 </section>
+								<section data-markdown>
+									## Who we are
+									- Indian Open software based storage company
+
+									- Based out of a non urban centre for certain philosophical reasons
+
+									- Interests extend beyond storage/IT
+								</section>
+								<section data-markdown>
+									## Our intentions in storage/IT
+									- Build high performance storage stacks (software and hardware) that are affordable to all markets, not just the developed, leveraging opensource stacks.
+
+									- Parallel file system based product
+
+									- Single node unified storage product (Unified-NAS)
+								</section>
+								<section data-markdown>
+											## About this presentation
+											- Our experiences in building out a product based on a distributed file system (glusterfs)
+								</section>
+								<section data-markdown>
+									## What we will cover
+									- A brief description of our product
+
+									- Why we needed a distributed management framework
+
+									- A brief intro to saltstack
+
+									- How we are using saltstack to address out need
+
+									- Our experiences (joys and pain points)
+								</section>
+								<section data-markdown>
+									## Disclaimers
+									- No allegiance to salt stack
+
+									- Purely our experiences
+
+									- Not played around much with other stacks so no grounds to do in depth comparisons
+								</section>
+								<section data-markdown>
+									## Our PFS based product
+									- Hardware optimized for high performance, low power consumption. Soon moving to support any underlying hardware.
+
+									- Based on open underlying software stacks - Linux, Centos, Gluster.
+
+									- Use gluster to aggregate the storage on multiple nodes to present as one name space
+
+									- Significantly simplified, unified, management framework to manage the whole system
+								</section>
+								<section data-markdown>
+									##Why we need a distributed management framework
+									- We deal with potentially a large number of systems
+
+									- Need to configure all the systems from a single point
+
+									- Need to moniter all the systems from a single point
+
+									- Need to troubleshoot all the systems from a single point
+								</section>
+								<section data-markdown>
+									## Our potential choices
+									- Write our own underlying communication/management infrastructure. (Reinventing the wheel)
+
+									- Choose an existing open source communication/management infrastructure. (much more robust and sustainable choice)
+								</section>
+								<section data-markdown>
+									## What we need from the infrastructure
+
+ 									- Strong developer community
+
+									- Python based (since we are python based)
+
+									- High performance (since we potentially will be communicating with a large number of systems)
+
+									- Open Source
+								</section>
+								<section data-markdown>
+									## Why Saltstack
+
+									- Answered all our needs :
+
+										- Open source with an active developer community.
+
+										- Python based
+
+										- Based on zeromq - high performance, parallel operations
+								</section>
+								<section data-markdown>
+									## What is Saltstack
+									- A brief intro/history of Saltstack
+								</section>
+								<section data-markdown>
+									## Saltstack model
+									- Has a master/minions model
+
+									- Can target all/subset of minions from the master
+
+									- Salt keys (requested, accepted, deleted)
+								</section>
+								<section data-markdown>
+									## Some networking prerequisites
+									- All our nodes need initial IP/DNS configuration through their terminal
+
+									- All the nodes are salt minions
+
+									- Have 2 salt masters
+
+									- All minions are preconfigured to point to the salt masters using a preset DNS name
+								</section>
+								<section data-markdown>
+									## So how do we use SaltStack
+									- When any node boots up after the initial configuration :
+
+									- Communicate with the salt master
+
+									- We know the list of pending minions.
+
+									- Use this in the UI to add nodes into our monitored pool
+
+									- Once they are part of the salt's acceped minion list, they can be monitored remotely.
+								</section>
+								<section>
+									<section data-markdown>
+									  ## Example - Creating a gluster distributed volume
+								  </section>
+									<section data-markdown>
+									- Requires an understanding of gluster concepts
+
+									- Using gluster manually, required admin to choose the location of data.
+
+									- Since we know about all the nodes through salt, we distribute the volumes as widely as possible to maximize performance.
+
+									- But volume creation has some prereuisites - needs gluster bricks to be places in zfs datasets
+								</section>
+
+								<section data-markdown>
+									- We offer a choice of deduplicated, compressed or normal underlying storage into which the gluster bricks can be placed.
+
+									- Based on the admin's choice, we use salt to first create datasets for the bricks with the appropriate properties on all the nodes.
+
+									- What happens if this fails on any node?
+
+									- We need to do a selective rollback - again using salt
+								</section>
+							</section>
+
+								<section>
+									<section data-markdown>
+									  ## Example - Constant monitoring
+								  </section>
+									<section data-markdown>
+										- Requires monitoring of many resources on each node to be collected and reported centrally.
+
+										- We use custom saltstack modules to pull information from various sources - ipmi, hard disks (smart monitoring, etc), zfs status, network stats, cpu, memory, gluster, etc..
+
+										- These scripts are run on a cron from the primary nodes to fetch json formatted status data.
+
+										- Alerts are setup based on certain conditions triggered from  this status data.
+
+										- Our web based monitoring framework then pulls this latest data whenever needed.
+
+										- Salt also allows us to do things like pull logs from any node on demand.
+								  </section>
+								</section>
+								<section data-markdown>
+								## Many more examples
+								- We use salt extensively for many more functionalities - dynamic DNS updates, handling disk failures, node flagging, services control, distributed samba control, etc..
+
+								- Would have taken us a lot, lot longer to implement all this without the use of a platform like SaltStack
+								</section>
+								<section data-markdown>
+									## Thank You
+								</section>
 			</div>
 		</div>
 
